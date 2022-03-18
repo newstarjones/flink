@@ -25,6 +25,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 /**
+ * 理解成是LogicalType的静态信息的补充，单起这个类是为了更好的封装，避免给LogicalType传太多额外参数
  * An enumeration of logical type roots containing static information about logical data types.
  *
  * <p>A root is an essential description of a {@link LogicalType} without additional parameters. For

@@ -44,6 +44,7 @@ public interface ClusterDescriptor<T> extends AutoCloseable {
 	ClusterClientProvider<T> retrieve(T clusterId) throws ClusterRetrieveException;
 
 	/**
+	 * 部署Flink集群
 	 * Triggers deployment of a cluster.
 	 * @param clusterSpecification Cluster specification defining the cluster to deploy
 	 * @return Client for the cluster

@@ -93,6 +93,11 @@ public final class Decimal implements Comparable<Decimal> {
 		return isCompact(this.precision);
 	}
 
+	/**
+	 * 是否可以压缩。精度<=18才可以压缩
+	 * @param precision
+	 * @return
+	 */
 	public static boolean isCompact(int precision) {
 		return precision <= MAX_COMPACT_PRECISION;
 	}

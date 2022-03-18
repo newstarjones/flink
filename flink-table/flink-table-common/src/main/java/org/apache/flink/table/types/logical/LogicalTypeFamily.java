@@ -21,6 +21,8 @@ package org.apache.flink.table.types.logical;
 import org.apache.flink.annotation.PublicEvolving;
 
 /**
+ * 对LogicalType进行分类
+ *
  * An enumeration of logical type families for clustering {@link LogicalTypeRoot}s into categories.
  *
  * <p>The enumeration is very close to the SQL standard in terms of naming and completeness. However,

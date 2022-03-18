@@ -18,6 +18,7 @@
 package org.apache.flink.streaming.examples.wordcount;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
+import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.utils.MultipleParameterTool;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -79,9 +80,18 @@ public class WordCount {
 			text = env.fromElements(WordCountData.WORDS);
 		}
 
+//		text.join(null).where(new KeySelector<String, String>() {
+//			@Override
+//			public String getKey(String value) throws Exception {
+//				return "a";
+//			}
+//		}).equalTo(
+//
+//		)
+
 		DataStream<Tuple2<String, Integer>> counts =
 			// split up the lines in pairs (2-tuples) containing: (word,1)
-			text.flatMap(new Tokenizer())
+			text.flatMap(new Tokenizer())  // 执行 flatMap后，得到 Tuple2<String, Integer> 的stream
 			// group by the tuple field "0" and sum up tuple field "1"
 			.keyBy(0).sum(1);
 

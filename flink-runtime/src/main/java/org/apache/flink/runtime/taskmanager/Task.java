@@ -704,7 +704,7 @@ public class Task implements Runnable, TaskSlotPayload, TaskActions, PartitionPr
 			// make sure the user code classloader is accessible thread-locally
 			executingThread.setContextClassLoader(userCodeClassLoader);
 
-			// run the invokable
+			// run the invokable  // StreamTask 或BatchTask
 			invokable.invoke();
 
 			// make sure, we enter the catch block if the task leaves the invoke() method due

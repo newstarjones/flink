@@ -638,7 +638,7 @@ public class StreamGraphGenerator {
 	 * wired the inputs to this new node.
 	 */
 	private <IN, OUT> Collection<Integer> transformOneInputTransform(OneInputTransformation<IN, OUT> transform) {
-
+		// inputIds 表示 当前transform的上游输入的ID
 		Collection<Integer> inputIds = transform(transform.getInput());
 
 		// the recursive call might have already transformed this

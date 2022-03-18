@@ -434,11 +434,13 @@ public class Execution implements AccessExecution, Archiveable<ArchivedExecution
 
 		assertRunningInJobMasterMainThread();
 		try {
+			// 1 分配资源
 			final CompletableFuture<Execution> allocationFuture = allocateResourcesForExecution(
 				slotProviderStrategy,
 				locationPreferenceConstraint,
 				allPreviousExecutionGraphAllocationIds);
 
+			// 2 开始部署
 			final CompletableFuture<Void> deploymentFuture = allocationFuture.thenRun(ThrowingRunnable.unchecked(this::deploy));
 
 			deploymentFuture.whenComplete(

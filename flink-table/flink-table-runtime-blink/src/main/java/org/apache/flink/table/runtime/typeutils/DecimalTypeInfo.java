@@ -27,6 +27,7 @@ import java.util.Arrays;
 
 /**
  * TypeInfo for Decimal.
+ * 例如：10.29，precision=4(总数字个数)，scale=2(小数点后面的数字个数)
  */
 public class DecimalTypeInfo extends TypeInformation<Decimal> {
 

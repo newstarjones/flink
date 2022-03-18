@@ -61,7 +61,7 @@ import _root_.scala.collection.JavaConversions._
   *
   * @param executor        instance of [[Executor]], needed to extract
   *                        [[StreamExecutionEnvironment]] for
-  *                        [[org.apache.flink.table.sources.StreamTableSource.getDataStream]]
+  *                        org.apache.flink.table.sources.StreamTableSource.getDataStream
   * @param config          mutable configuration passed from corresponding [[TableEnvironment]]
   * @param functionCatalog catalog of functions
   * @param catalogManager  manager of catalog meta objects such as tables, views, databases etc.
@@ -147,9 +147,13 @@ abstract class PlannerBase(
       Thread.currentThread().getContextClassLoader)
     overrideEnvParallelism()
 
+    // 1）将 Operation 转换为 Calcite RelNode逻辑计划
     val relNodes = modifyOperations.map(translateToRel)
+    // 2）优化 Calcite RelNode逻辑计划
     val optimizedRelNodes = optimize(relNodes)
+    // 3）将 Calcite RelNode逻辑计划  转换成物理计划，从FlinkPhysicalRel DAG 转换成 ExecNode DAG
     val execNodes = translateToExecNodePlan(optimizedRelNodes)
+    // 4）将 ExecNode DAG 转换为底层的 Transformation DAG
     translateToPlan(execNodes)
   }
 

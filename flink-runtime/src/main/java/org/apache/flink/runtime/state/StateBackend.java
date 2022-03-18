@@ -160,7 +160,7 @@ public interface StateBackend extends java.io.Serializable {
 	 * Creates a new {@link OperatorStateBackend} that can be used for storing operator state.
 	 *
 	 * <p>Operator state is state that is associated with parallel operator (or function) instances,
-	 * rather than with keys.
+	 * rather than with keys[而不是与keys相关的状态].
 	 *
 	 * @param env The runtime environment of the executing task.
 	 * @param operatorIdentifier The identifier of the operator whose state should be stored.

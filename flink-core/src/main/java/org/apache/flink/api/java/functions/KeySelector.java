@@ -30,7 +30,7 @@ import java.io.Serializable;
  *
  * <p>The extractor takes an object and returns the deterministic key for that object.
  *
- * @param <IN> Type of objects to extract the key from.
+ * @param <IN> Type of objects to extract the key from.待抽取key的对象的类型.
  * @param <KEY> Type of key.
  */
 @Public

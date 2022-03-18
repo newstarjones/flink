@@ -354,6 +354,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
 	}
 
 	/**
+	 * 简单理解就是，如果调度策略是分阶段，返回true，如果是一次分配所有资源，返回false
 	 * <b>HACK:</b> See <a href="https://issues.apache.org/jira/browse/FLINK-14162">FLINK-14162</a>
 	 * for details.
 	 */
@@ -373,6 +374,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
 	}
 
 	private void waitForAllSlotsAndDeploy(final List<DeploymentHandle> deploymentHandles) {
+		// 1 分配所有资源 2 资源部署完成后，部署所有task
 		FutureUtils.assertNoException(
 			assignAllResources(deploymentHandles).handle(deployAll(deploymentHandles)));
 	}

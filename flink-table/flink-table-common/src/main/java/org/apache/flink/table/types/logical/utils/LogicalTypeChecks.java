@@ -25,6 +25,7 @@ import org.apache.flink.table.types.logical.CharType;
 import org.apache.flink.table.types.logical.DayTimeIntervalType;
 import org.apache.flink.table.types.logical.DecimalType;
 import org.apache.flink.table.types.logical.DistinctType;
+import org.apache.flink.table.types.logical.FloatType;
 import org.apache.flink.table.types.logical.IntType;
 import org.apache.flink.table.types.logical.LocalZonedTimestampType;
 import org.apache.flink.table.types.logical.LogicalType;
@@ -443,5 +444,12 @@ public final class LogicalTypeChecks {
 				return true;
 			}
 		}
+	}
+
+	public static void main(String[] args) {
+		// FloatType 不行
+		LogicalType logicalType = new FloatType();
+		final boolean singleFieldInterval = isSingleFieldInterval(logicalType);
+		System.out.println(singleFieldInterval);
 	}
 }

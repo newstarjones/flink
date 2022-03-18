@@ -303,8 +303,10 @@ class CreditBasedPartitionRequestClientHandler extends ChannelInboundHandlerAdap
 					return;
 				}
 
+				// 申请Flink的Buffer对象，以盛放网络数据
 				Buffer buffer = inputChannel.requestBuffer();
 				if (buffer != null) {
+					// 将 netty buffer 的数据写入到 Flink 的 Buffer
 					nettyBuffer.readBytes(buffer.asByteBuf(), receivedSize);
 					buffer.setCompressed(bufferOrEvent.isCompressed);
 

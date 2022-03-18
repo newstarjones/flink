@@ -175,7 +175,7 @@ class CreditBasedSequenceNumberingViewReader implements BufferAvailabilityListen
 
 			return new BufferAndAvailability(
 				next.buffer(), isAvailable(next), next.buffersInBacklog());
-		} else {
+		} else {  // 意味着 producer is slower than the consumer
 			return null;
 		}
 	}

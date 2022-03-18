@@ -73,8 +73,10 @@ public class WindowWordCount {
 
 		DataStream<Tuple2<String, Integer>> counts =
 		// split up the lines in pairs (2-tuples) containing: (word,1)
+			// 1 我以为 这里从parallelism=1 变成 parallelism=8 也会产生一次shuffle
 		text.flatMap(new WordCount.Tokenizer())
 				// create windows of windowSize records slided every slideSize records
+				// 2 我以为 这里也会产生一次shuffle， keyBy 和 countWindow 会合并执行
 				.keyBy(0)
 				.countWindow(windowSize, slideSize)
 				// group by the tuple field "0" and sum up tuple field "1"

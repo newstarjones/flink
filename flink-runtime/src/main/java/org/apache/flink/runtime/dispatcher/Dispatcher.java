@@ -305,8 +305,8 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
 	}
 
 	private boolean isPartialResourceConfigured(JobGraph jobGraph) {
-		boolean hasVerticesWithUnknownResource = false;
-		boolean hasVerticesWithConfiguredResource = false;
+		boolean hasVerticesWithUnknownResource = false; // 部分节点的资源处于UNKNOWN状态
+		boolean hasVerticesWithConfiguredResource = false; // 部分节点的资源已经配置OK
 
 		for (JobVertex jobVertex : jobGraph.getVertices()) {
 			if (jobVertex.getMinResources() == ResourceSpec.UNKNOWN) {
@@ -343,6 +343,12 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
 		}, getRpcService().getExecutor());
 	}
 
+	/**
+	 * persist指持久化JobGraph，runJob指启动JobMaster
+	 * @param jobGraph
+	 * @return
+	 * @throws Exception
+	 */
 	private CompletableFuture<Void> persistAndRunJob(JobGraph jobGraph) throws Exception {
 		jobGraphWriter.putJobGraph(jobGraph);
 
@@ -355,6 +361,11 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
 		}));
 	}
 
+	/**
+	 * 这里将会启动当前JobGraph对应的JobMaster
+	 * @param jobGraph
+	 * @return
+	 */
 	private CompletableFuture<Void> runJob(JobGraph jobGraph) {
 		Preconditions.checkState(!jobManagerRunnerFutures.containsKey(jobGraph.getJobID()));
 

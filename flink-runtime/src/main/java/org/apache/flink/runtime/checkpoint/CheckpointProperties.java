@@ -39,9 +39,9 @@ public class CheckpointProperties implements Serializable {
 	/** Type - checkpoint / savepoint. */
 	private final CheckpointType checkpointType;
 
-	/** This has a misleading name and actually means whether the snapshot must be triggered,
+	/** This has a misleading name[误导性的名字] and actually means whether the snapshot must be triggered,
 	 * or whether it may be rejected by the checkpoint coordinator if too many checkpoints are
-	 * currently in progress. */
+	 * currently in progress. 实际只表示 是否必须触发检查点快照*/
 	private final boolean forced;
 
 	private final boolean discardSubsumed;
