@@ -139,10 +139,10 @@ public class NettyPartitionRequestClient implements PartitionRequestClient {
                     }
                 };
 
-        if (delayMs == 0) {
+        if (delayMs == 0) { // 立即发送
             ChannelFuture f = tcpChannel.writeAndFlush(request);
             f.addListener(listener);
-        } else {
+        } else { // 延迟发送
             final ChannelFuture[] f = new ChannelFuture[1];
             tcpChannel
                     .eventLoop()

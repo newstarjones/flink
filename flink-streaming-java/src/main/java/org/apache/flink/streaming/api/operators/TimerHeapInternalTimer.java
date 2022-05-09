@@ -40,7 +40,7 @@ public final class TimerHeapInternalTimer<K, N>
     /** The namespace for which the timer is scoped. */
     @Nonnull private final N namespace;
 
-    /** The expiration timestamp. */
+    /** The expiration timestamp. 过期时间戳 */
     private final long timestamp;
 
     /**

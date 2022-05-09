@@ -24,6 +24,7 @@ import org.apache.flink.connector.base.source.reader.RecordsWithSplitIds;
 import java.io.IOException;
 
 /**
+ * 可以读取单个或多个split
  * An interface used to read from splits. The implementation could either read from a single split
  * or from multiple splits.
  *

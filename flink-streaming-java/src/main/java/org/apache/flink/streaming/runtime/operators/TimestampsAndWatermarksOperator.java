@@ -41,7 +41,7 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
  * <p>These two responsibilities run in the same operator rather than in two different ones, because
  * the implementation of the timestamp assigner and the watermark generator is frequently in the
  * same class (and should be run in the same instance), even though the separate interfaces support
- * the use of different classes.
+ * the use of different classes.(所谓 separate interface的意思是 TimestampAssigner 和 WatermarkGenerator 两个接口)
  *
  * @param <T> The type of the input elements
  */
@@ -98,6 +98,7 @@ public class TimestampsAndWatermarksOperator<T> extends AbstractStreamOperator<T
         final T event = element.getValue();
         final long previousTimestamp =
                 element.hasTimestamp() ? element.getTimestamp() : Long.MIN_VALUE;
+        // 这里叫做new，是因为这个timestamp是通过 TimestampAssigner 产生的，而TimestampAssigner的实现是用户可定制的
         final long newTimestamp = timestampAssigner.extractTimestamp(event, previousTimestamp);
 
         element.setTimestamp(newTimestamp);

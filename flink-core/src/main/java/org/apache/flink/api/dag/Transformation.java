@@ -158,7 +158,7 @@ public abstract class Transformation<T> {
 
     /**
      * User-specified ID for this transformation. This is used to assign the same operator ID across
-     * job restarts. There is also the automatically generated {@link #id}, which is assigned from a
+     * job restarts.(当job重新启动时，分配相同的operatorId) There is also the automatically generated {@link #id}, which is assigned from a
      * static counter. That field is independent from this.
      */
     private String uid;

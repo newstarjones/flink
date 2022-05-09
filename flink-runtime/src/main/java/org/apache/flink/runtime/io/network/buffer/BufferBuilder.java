@@ -93,9 +93,9 @@ public class BufferBuilder {
     public int append(ByteBuffer source) {
         checkState(!isFinished());
 
-        int needed = source.remaining();
-        int available = getMaxCapacity() - positionMarker.getCached();
-        int toCopy = Math.min(needed, available);
+        int needed = source.remaining(); // 当前要写入多少数据
+        int available = getMaxCapacity() - positionMarker.getCached(); // 剩余能写的空间
+        int toCopy = Math.min(needed, available); // 取最小的
 
         memorySegment.put(positionMarker.getCached(), source, toCopy);
         positionMarker.move(toCopy);
@@ -197,6 +197,7 @@ public class BufferBuilder {
         private volatile int position = 0;
 
         /**
+         * 和 position 意义是一样的，cachedPosition的值表示当前buffer中的字节数。
          * Locally cached value of volatile {@code position} to avoid unnecessary volatile accesses.
          */
         private int cachedPosition = 0;
@@ -229,6 +230,10 @@ public class BufferBuilder {
             return currentPosition;
         }
 
+        /**
+         * 向前推进 offset 个位置。比如写入了1个字节，意味着位置前进1
+         * @param offset
+         */
         public void move(int offset) {
             set(cachedPosition + offset);
         }

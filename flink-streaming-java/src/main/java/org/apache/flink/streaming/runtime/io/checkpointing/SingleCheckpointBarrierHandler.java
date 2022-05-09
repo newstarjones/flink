@@ -207,7 +207,7 @@ public class SingleCheckpointBarrierHandler extends CheckpointBarrierHandler {
         checkNewCheckpoint(barrier);
         checkState(currentCheckpointId == barrierId);
 
-        if (numBarriersReceived++ == 0) {
+        if (numBarriersReceived++ == 0) { // 收到第一个barrier
             if (getNumOpenChannels() == 1) {
                 markAlignmentStartAndEnd(barrier.getTimestamp());
             } else {

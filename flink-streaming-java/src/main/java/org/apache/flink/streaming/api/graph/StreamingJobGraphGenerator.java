@@ -293,6 +293,13 @@ public class StreamingJobGraphGenerator {
         }
     }
 
+    /**
+     * 处理源。比如 源和其下游节点是否可以chain在一起
+     *
+     * @param hashes
+     * @param legacyHashes
+     * @return key:源ID，value:OperatorChainInfo(包含了可能的 算子chain在一起)
+     */
     private Map<Integer, OperatorChainInfo> buildChainedInputsAndGetHeadInputs(
             final Map<Integer, byte[]> hashes, final List<Map<Integer, byte[]>> legacyHashes) {
 
@@ -312,6 +319,9 @@ public class StreamingJobGraphGenerator {
 
                 if (targetChainingStrategy == ChainingStrategy.HEAD_WITH_SOURCES
                         && isChainableInput(sourceOutEdge, streamGraph)) {
+                    // 判断当前源和下游节点能否chain在一起，需满足
+                    // 1 下游节点的 chain strategy 是 HEAD_WITH_SOURCES
+                    // 2 源的输出是否支持chain
                     final OperatorID opId = new OperatorID(hashes.get(sourceNodeId));
                     final StreamConfig.SourceInputConfig inputConfig =
                             new StreamConfig.SourceInputConfig(sourceOutEdge);
@@ -367,13 +377,15 @@ public class StreamingJobGraphGenerator {
         // from the sources that needs to run as the main (head) operator.
         final Map<Integer, OperatorChainInfo> chainEntryPoints =
                 buildChainedInputsAndGetHeadInputs(hashes, legacyHashes);
+        // 按照source节点的key的顺序，输出其对应的OperatorChainInfo集合
         final Collection<OperatorChainInfo> initialEntryPoints =
                 chainEntryPoints.entrySet().stream()
                         .sorted(Comparator.comparing(Map.Entry::getKey))
                         .map(Map.Entry::getValue)
                         .collect(Collectors.toList());
 
-        // iterate over a copy of the values, because this map gets concurrently modified
+        // iterate over a copy of the values, because this map gets concurrently modified // 这句注释解释了为何要 做上面的这一行动作
+        // 因为chainEntryPoints这个map会同时被修改，因此这里先创建一个 initialEntryPoints 副本
         for (OperatorChainInfo info : initialEntryPoints) {
             createChain(
                     info.getStartNodeId(),
@@ -630,6 +642,15 @@ public class StreamingJobGraphGenerator {
         return new StreamConfig(jobVertex.getConfiguration());
     }
 
+    /**
+     * 配置该 vertex 的 StreamConfig
+     *
+     * @param vertexID
+     * @param config
+     * @param chainableOutputs
+     * @param nonChainableOutputs
+     * @param chainedSources
+     */
     private void setVertexConfig(
             Integer vertexID,
             StreamConfig config,
@@ -887,7 +908,7 @@ public class StreamingJobGraphGenerator {
         // check that we do not have a union operation, because unions currently only work
         // through the network/byte-channel stack.
         // we check that by testing that each "type" (which means input position) is used only once
-        for (StreamEdge inEdge : downStreamVertex.getInEdges()) {
+        for (StreamEdge inEdge : downStreamVertex.getInEdges()) { // 检查是否是 union 操作，
             if (inEdge != edge && inEdge.getTypeNumber() == edge.getTypeNumber()) {
                 return false;
             }

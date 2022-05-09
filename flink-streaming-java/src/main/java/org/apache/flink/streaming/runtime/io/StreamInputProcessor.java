@@ -35,7 +35,7 @@ import java.util.concurrent.CompletableFuture;
 public interface StreamInputProcessor extends AvailabilityProvider, Closeable {
     /**
      * In case of two and more input processors this method must call {@link
-     * InputSelectable#nextSelection()} to choose which input to consume from next.
+     * InputSelectable#nextSelection()} to choose which input to consume from next. 如果有两个或更多输入处理器，此方法必须调用 InputSelectable.nextSelection() 来选择下一个要使用的输入。
      *
      * @return input status to estimate whether more records can be processed immediately or not. If
      *     there are no more records available at the moment and the caller should check finished

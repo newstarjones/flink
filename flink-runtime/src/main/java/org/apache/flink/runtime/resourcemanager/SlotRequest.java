@@ -27,8 +27,9 @@ import java.io.Serializable;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /**
- * This describes the requirement of the slot, mainly used by JobManager requesting slot from
+ * This describes the requirement of the slot, mainly used by JobManager(应该叫JobMaster，这是之前的名字) requesting slot from
  * ResourceManager.
+ * 主要用于 JobMaster 向RM请求Slot
  */
 public class SlotRequest implements Serializable {
 

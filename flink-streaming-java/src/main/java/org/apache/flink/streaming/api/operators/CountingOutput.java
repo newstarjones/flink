@@ -47,7 +47,7 @@ public class CountingOutput<OUT> implements Output<StreamRecord<OUT>> {
     @Override
     public void collect(StreamRecord<OUT> record) {
         numRecordsOut.inc();
-        output.collect(record);
+        output.collect(record);  // 这里的output 是 RecordWriterOutput
     }
 
     @Override

@@ -100,7 +100,7 @@ public abstract class RecordWriter<T extends IOReadableWritable> implements Avai
 
     protected void emit(T record, int targetSubpartition) throws IOException {
         checkErroneous();
-
+        // targetPartition 为 PipelinedResultPartition
         targetPartition.emitRecord(serializeRecord(serializer, record), targetSubpartition);
 
         if (flushAlways) {

@@ -1297,6 +1297,8 @@ public class FutureUtils {
      * Checks that the given {@link CompletableFuture} is not completed exceptionally. If the future
      * is completed exceptionally, then it will call the given uncaught exception handler.
      *
+     * 检查给定的 CompletableFuture 是否异常的完成。如果确实是异常的完成，则把异常交给uncaught exception handler处理
+     *
      * @param completableFuture to assert for no exceptions
      * @param uncaughtExceptionHandler to call if the future is completed exceptionally
      */

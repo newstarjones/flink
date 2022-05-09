@@ -68,8 +68,8 @@ import java.io.IOException;
  * itself works with the specific primitives that the target storage offers, recovery will fail if
  * the data written so far was deleted by an external factor. For example, some implementations
  * stage data in temp files or object parts. If these were deleted by someone or by an automated
- * cleanup policy, then resuming may fail. This is not surprising and should be expected, but we
- * want to explicitly point this out here.
+ * cleanup policy, then resuming may fail. This is not surprising and should be expected,(这并不奇怪，应该预料到)
+ * but we want to explicitly point this out here.
  *
  * <p>Specific care is needed for systems like S3, where the implementation uses Multipart Uploads
  * to incrementally upload and persist parts of the result. Timeouts for Multipart Uploads and life

@@ -54,6 +54,8 @@ public abstract class CheckpointBarrierHandler implements Closeable {
     /**
      * The time (in nanoseconds) between creation of the checkpoint's first checkpoint barrier and
      * receiving it by this task.
+     *
+     * 创建CheckpointBarrier和收到这个CheckpointBarrier之间的延迟时间(单位为纳秒)
      */
     private long latestCheckpointStartDelayNanos;
 
@@ -90,6 +92,11 @@ public abstract class CheckpointBarrierHandler implements Closeable {
 
     public abstract long getLatestCheckpointId();
 
+    /**
+     * 到当前为止，对齐持续了多长时间
+     *
+     * @return
+     */
     public long getAlignmentDurationNanos() {
         if (isDuringAlignment()) {
             return clock.relativeTimeNanos() - startOfAlignmentTimestamp;
@@ -98,6 +105,10 @@ public abstract class CheckpointBarrierHandler implements Closeable {
         }
     }
 
+    /**
+     * checkpoint barrier 创建 到 当前算子收到，耗费了多长时间
+     * @return
+     */
     public long getCheckpointStartDelayNanos() {
         return latestCheckpointStartDelayNanos;
     }
@@ -106,6 +117,11 @@ public abstract class CheckpointBarrierHandler implements Closeable {
         return CompletableFuture.completedFuture(null);
     }
 
+    /**
+     * 所有的inputchannel的 barrier都收到。 当前Task可以做cp了。
+     * @param checkpointBarrier
+     * @throws IOException
+     */
     protected void notifyCheckpoint(CheckpointBarrier checkpointBarrier) throws IOException {
         CheckpointMetaData checkpointMetaData =
                 new CheckpointMetaData(checkpointBarrier.getId(), checkpointBarrier.getTimestamp());

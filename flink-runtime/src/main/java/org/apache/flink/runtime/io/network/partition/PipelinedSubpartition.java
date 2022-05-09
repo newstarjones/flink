@@ -376,10 +376,11 @@ public class PipelinedSubpartition extends ResultSubpartition
 
     public boolean isAvailable(int numCreditsAvailable) {
         synchronized (buffers) {
-            if (numCreditsAvailable > 0) {
+            if (numCreditsAvailable > 0) { // credit还有，再判断buffers的数据是否可用。言下之意，若credit不足，则暂不读取buffers数据
                 return isDataAvailableUnsafe();
             }
 
+            // 若buffers中第一个buffer的类型为event，则将取出该事件发给下游
             final Buffer.DataType dataType = getNextBufferTypeUnsafe();
             return dataType.isEvent();
         }

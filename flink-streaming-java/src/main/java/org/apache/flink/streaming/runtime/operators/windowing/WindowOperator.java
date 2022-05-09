@@ -305,6 +305,7 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
         // if element is handled by none of assigned elementWindows
         boolean isSkippedElement = true;
 
+        // 当前WindowOperator关联的key
         final K key = this.<K>getKeyedStateBackend().getCurrentKey();
 
         if (windowAssigner instanceof MergingWindowAssigner) {
@@ -427,11 +428,11 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
                 TriggerResult triggerResult = triggerContext.onElement(element);
 
                 if (triggerResult.isFire()) {
-                    ACC contents = windowState.get();
+                    ACC contents = windowState.get();  // contents是所有该窗口的元素
                     if (contents == null) {
                         continue;
                     }
-                    emitWindowContents(window, contents);
+                    emitWindowContents(window, contents); // 里头将调用窗口函数
                 }
 
                 if (triggerResult.isPurge()) {
@@ -932,6 +933,12 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
             internalTimerService.deleteEventTimeTimer(window, time);
         }
 
+        /**
+         *
+         * @param element
+         * @return 返回当前触发器的触发结果：将 TriggerResult类
+         * @throws Exception
+         */
         public TriggerResult onElement(StreamRecord<IN> element) throws Exception {
             return trigger.onElement(element.getValue(), element.getTimestamp(), window, this);
         }

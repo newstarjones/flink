@@ -61,7 +61,7 @@ public class IteratorSourceEnumerator<SplitT extends IteratorSourceSplit<?, ?>>
         final SplitT nextSplit = remainingSplits.poll();
         if (nextSplit != null) {
             context.assignSplit(nextSplit, subtaskId);
-        } else {
+        } else { // 没有split可分，或者说 split已经分配完毕
             context.signalNoMoreSplits(subtaskId);
         }
     }

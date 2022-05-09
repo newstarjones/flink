@@ -71,6 +71,14 @@ public abstract class NettyMessage {
 
     static final int MAGIC_NUMBER = 0xBADC0FFE;
 
+    /**
+     * 每个NettyMessage子类都实现了该方法
+     *
+     * @param out
+     * @param promise
+     * @param allocator
+     * @throws IOException
+     */
     abstract void write(
             ChannelOutboundInvoker out, ChannelPromise promise, ByteBufAllocator allocator)
             throws IOException;
@@ -199,6 +207,13 @@ public abstract class NettyMessage {
         @Override
         protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
             ByteBuf msg = (ByteBuf) super.decode(ctx, in);
+            /**
+             * 由FRAME LENGTH (4) 可知，一个NettyMessage报文最大长度为2^32 字节=4G 字节
+             * decode后的数据格式为
+             *  +------------------+--------++----------------+
+             *  | MAGIC NUMBER (4) | ID (1) || CUSTOM MESSAGE |
+             *  +------------------+--------++----------------+
+             */
             if (msg == null) {
                 return null;
             }
@@ -755,6 +770,16 @@ public abstract class NettyMessage {
 
     // ------------------------------------------------------------------------
 
+    /**
+     *
+     * @param out
+     * @param promise
+     * @param allocator – byte buffer allocator to use
+     * @param consumer
+     * @param id – NettyMessage subclass ID
+     * @param length – 消息长度
+     * @throws IOException
+     */
     void writeToChannel(
             ChannelOutboundInvoker out,
             ChannelPromise promise,

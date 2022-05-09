@@ -251,6 +251,8 @@ public class ResultPartitionFactory {
     }
 
     /**
+     * TODO 注释没看懂啊
+     *
      * The minimum pool size should be <code>numberOfSubpartitions + 1</code> for two
      * considerations:
      *

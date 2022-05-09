@@ -24,7 +24,10 @@ import org.apache.flink.util.Preconditions;
 
 import java.io.Serializable;
 
-/** Describe the slot offering to job manager provided by task manager. */
+/**
+ * 最重要的是  ResourceProfile 字段，记录了资源信息
+ * Describe the slot offering to job manager provided by task manager.
+ * */
 public class SlotOffer implements Serializable {
 
     private static final long serialVersionUID = -7067814231108250971L;

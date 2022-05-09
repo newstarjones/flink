@@ -40,6 +40,8 @@ public interface SourceReader<T, SplitT extends SourceSplit>
     void start();
 
     /**
+     * 非阻塞
+     *
      * Poll the next available record into the {@link SourceOutput}.
      *
      * <p>The implementation must make sure this method is non-blocking.
@@ -82,7 +84,9 @@ public interface SourceReader<T, SplitT extends SourceSplit>
     CompletableFuture<Void> isAvailable();
 
     /**
-     * Adds a list of splits for this reader to read. This method is called when the enumerator
+     * <p> 给当前Reader分配一个 Split 集合。嘿哥们，你能力强，多读一点数据吧
+     *
+     * <p> Adds a list of splits for this reader to read. This method is called when the enumerator
      * assigns a split via {@link SplitEnumeratorContext#assignSplit(SourceSplit, int)} or {@link
      * SplitEnumeratorContext#assignSplits(SplitsAssignment)}.
      *
@@ -96,6 +100,7 @@ public interface SourceReader<T, SplitT extends SourceSplit>
      *
      * <p>It is triggered when the enumerator calls {@link
      * SplitEnumeratorContext#signalNoMoreSplits(int)} with the reader's parallel subtask.
+     * 这里的trigger的意思是说 {@link SplitEnumeratorContext#signalNoMoreSplits(int)} 调用后，进一步会调用到这里
      */
     void notifyNoMoreSplits();
 

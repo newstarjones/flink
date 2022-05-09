@@ -69,7 +69,7 @@ import java.util.Map;
  * }
  * }</pre>
  *
- * <p>The types "id", "text", and "timestamp" are basic types that take up one field. The
+ * <p>The types "id", "text", and "timestamp" are basic types that take up one field(占据一个字段). The
  * "InnerType" has an arity of two, and also two fields totally. The "OuterType" has an arity of two
  * fields, and a total number of three fields ( it contains "id", "text", and "timestamp" through
  * recursive flattening).

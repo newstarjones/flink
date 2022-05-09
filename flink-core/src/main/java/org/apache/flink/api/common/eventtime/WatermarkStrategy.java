@@ -167,6 +167,7 @@ public interface WatermarkStrategy<T>
      * @see BoundedOutOfOrdernessWatermarks
      */
     static <T> WatermarkStrategy<T> forBoundedOutOfOrderness(Duration maxOutOfOrderness) {
+        // 这里当然是用到lambda函数的写法。但你可以理解成 之前的 匿名实现一个接口
         return (ctx) -> new BoundedOutOfOrdernessWatermarks<>(maxOutOfOrderness);
     }
 

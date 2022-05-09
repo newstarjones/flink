@@ -50,9 +50,9 @@ import static org.apache.flink.util.Preconditions.checkState;
  * A result partition for data produced by a single task.
  *
  * <p>This class is the runtime part of a logical {@link IntermediateResultPartition}. Essentially,
- * a result partition is a collection of {@link Buffer} instances. The buffers are organized in one
- * or more {@link ResultSubpartition} instances or in a joint structure which further partition the
- * data depending on the number of consuming tasks and the data {@link DistributionPattern}.
+ * a result partition is a collection of {@link Buffer} instances.本质上一个result partition就是一个{@link Buffer}的集合
+ * The buffers are organized in one or more {@link ResultSubpartition} instances or in a joint structure
+ * which further partition the data depending on the number of consuming tasks and the data {@link DistributionPattern}.
  *
  * <p>Tasks, which consume a result partition have to request one of its subpartitions. The request
  * happens either remotely (see {@link RemoteInputChannel}) or locally (see {@link

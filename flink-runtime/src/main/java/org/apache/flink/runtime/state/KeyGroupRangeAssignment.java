@@ -109,7 +109,7 @@ public final class KeyGroupRangeAssignment {
      * Computes the index of the operator to which a key-group belongs under the given parallelism
      * and maximum parallelism.
      *
-     * <p>IMPORTANT: maxParallelism must be <= Short.MAX_VALUE to avoid rounding problems in this
+     * <p>IMPORTANT: maxParallelism must be <= Short.MAX_VALUE(32767) to avoid rounding problems(舍入问题) in this
      * method. If we ever want to go beyond this boundary, this method must perform arithmetic on
      * long values.
      *

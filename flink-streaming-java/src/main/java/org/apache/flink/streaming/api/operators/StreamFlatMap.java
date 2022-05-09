@@ -21,7 +21,7 @@ import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.streaming.runtime.streamrecord.StreamRecord;
 
-/** A {@link StreamOperator} for executing {@link FlatMapFunction FlatMapFunctions}. */
+/** A {@link StreamOperator} for executing {@link FlatMapFunction FlatMapFunction}. */
 @Internal
 public class StreamFlatMap<IN, OUT> extends AbstractUdfStreamOperator<OUT, FlatMapFunction<IN, OUT>>
         implements OneInputStreamOperator<IN, OUT> {

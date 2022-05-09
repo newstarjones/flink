@@ -267,6 +267,7 @@ class SubtaskCheckpointCoordinatorImpl implements SubtaskCheckpointCoordinator {
         // if necessary.
         lastCheckpointId = metadata.getCheckpointId();
         if (checkAndClearAbortedStatus(metadata.getCheckpointId())) {
+            // 进入这里意味着 metadata.getCheckpointId()里的cp 之前执行过一次，这里是再次执行
             // broadcast cancel checkpoint marker to avoid downstream back-pressure due to
             // checkpoint barrier align.
             operatorChain.broadcastEvent(new CancelCheckpointMarker(metadata.getCheckpointId()));
@@ -278,6 +279,7 @@ class SubtaskCheckpointCoordinatorImpl implements SubtaskCheckpointCoordinator {
 
         // if checkpoint has been previously unaligned, but was forced to be aligned (pointwise
         // connection), revert it here so that it can jump over output data
+        // 如果检查点以前未对齐，但被迫对齐（逐点连接），则在此处还原它，以便它可以跳过输出数据
         if (options.getAlignment() == CheckpointOptions.AlignmentType.FORCED_ALIGNED) {
             options = options.withUnalignedSupported();
             initInputsCheckpoint(metadata.getCheckpointId(), options);
@@ -288,20 +290,21 @@ class SubtaskCheckpointCoordinatorImpl implements SubtaskCheckpointCoordinator {
         operatorChain.prepareSnapshotPreBarrier(metadata.getCheckpointId());
 
         // Step (2): Send the checkpoint barrier downstream
+        // 向下游发送CheckpointBarrier事件。 不管是Source、中间Operator，还是Sink都执行
         operatorChain.broadcastEvent(
                 new CheckpointBarrier(metadata.getCheckpointId(), metadata.getTimestamp(), options),
                 options.isUnalignedCheckpoint());
 
         // Step (3): Prepare to spill the in-flight buffers for input and output
-        if (options.isUnalignedCheckpoint()) {
+        if (options.isUnalignedCheckpoint()) { // barrier不做对齐，FIXME 没看懂
             // output data already written while broadcasting event
             channelStateWriter.finishOutput(metadata.getCheckpointId());
         }
 
-        // Step (4): Take the state snapshot. This should be largely asynchronous, to not impact
-        // progress of the
-        // streaming topology
+        // Step (4): Take the state snapshot. This should be largely asynchronous(这应该在很大程度上是异步的),
+        // to not impact progress of the streaming topology
 
+        // 每个算子都有一个 OperatorSnapshot，即使是operator chain，也要拆成一个个的operator
         Map<OperatorID, OperatorSnapshotFutures> snapshotFutures =
                 new HashMap<>(operatorChain.getNumberOfOperators());
         try {
@@ -507,6 +510,14 @@ class SubtaskCheckpointCoordinatorImpl implements SubtaskCheckpointCoordinator {
                         });
     }
 
+    /**
+     * 等待异步处理的结果，并将快照结果异步上报给上级
+     *
+     * @param snapshotFutures 待完成的快照任务
+     * @param metadata
+     * @param metrics
+     * @param isRunning
+     */
     private void finishAndReportAsync(
             Map<OperatorID, OperatorSnapshotFutures> snapshotFutures,
             CheckpointMetaData metadata,
@@ -544,6 +555,17 @@ class SubtaskCheckpointCoordinatorImpl implements SubtaskCheckpointCoordinator {
                 unregisterAsyncCheckpointRunnable(asyncCheckpointRunnable.getCheckpointId());
     }
 
+    /**
+     * 发起写快照动作
+     * @param operatorSnapshotsInProgress 每个算子的写快照的结果
+     * @param checkpointMetaData
+     * @param checkpointMetrics
+     * @param checkpointOptions
+     * @param operatorChain
+     * @param isRunning
+     * @return
+     * @throws Exception
+     */
     private boolean takeSnapshotSync(
             Map<OperatorID, OperatorSnapshotFutures> operatorSnapshotsInProgress,
             CheckpointMetaData checkpointMetaData,
@@ -619,17 +641,18 @@ class SubtaskCheckpointCoordinatorImpl implements SubtaskCheckpointCoordinator {
             ChannelStateWriteResult channelStateWriteResult,
             CheckpointStreamFactory storage)
             throws Exception {
+        // 一般算子的通用动作
         OperatorSnapshotFutures snapshotInProgress =
                 checkpointStreamOperator(
                         op, checkpointMetaData, checkpointOptions, storage, isRunning);
-        if (op == operatorChain.getMainOperator()) {
+        if (op == operatorChain.getMainOperator()) {  // 主算子 要保存 input channel 的状态
             snapshotInProgress.setInputChannelStateFuture(
                     channelStateWriteResult
                             .getInputChannelStateHandles()
                             .thenApply(StateObjectCollection::new)
                             .thenApply(SnapshotResult::of));
         }
-        if (op == operatorChain.getTailOperator()) {
+        if (op == operatorChain.getTailOperator()) { // 尾算子 要保存 ResultSubpartition 的状态
             snapshotInProgress.setResultSubpartitionStateFuture(
                     channelStateWriteResult
                             .getResultSubpartitionStateHandles()

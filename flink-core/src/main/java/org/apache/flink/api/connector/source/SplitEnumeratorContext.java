@@ -39,7 +39,8 @@ public interface SplitEnumeratorContext<SplitT extends SourceSplit> {
     MetricGroup metricGroup();
 
     /**
-     * Send a source event to a source reader. The source reader is identified by its subtask id.
+     * <p> 向 subtaskId 标识的 source reader 发送 SourceEvent
+     * <p> Send a source event to a source reader. The source reader is identified by its subtask id.
      *
      * @param subtaskId the subtask id of the source reader to send this event to.
      * @param event the source event to send.
@@ -63,6 +64,8 @@ public interface SplitEnumeratorContext<SplitT extends SourceSplit> {
     Map<Integer, ReaderInfo> registeredReaders();
 
     /**
+     * 向subtask(更具体的讲是SourceOperator所在的task)发送 split分配事件，进而调整 Source 消费哪些split
+     * <p></p>
      * Assign the splits.
      *
      * @param newSplitAssignments the new split assignments to add.
@@ -83,7 +86,8 @@ public interface SplitEnumeratorContext<SplitT extends SourceSplit> {
     }
 
     /**
-     * Signals a subtask that it will not receive any further split.
+     * <p> 通知索引为 subtask 的 子任务它将不再收到任何 Split
+     * <p> Signals a subtask that it will not receive any further split.
      *
      * @param subtask The index of the operator's parallel subtask that shall be signaled it will
      *     not receive any further split.

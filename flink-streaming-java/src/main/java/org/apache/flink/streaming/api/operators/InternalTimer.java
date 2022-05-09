@@ -42,6 +42,7 @@ public interface InternalTimer<K, N> extends PriorityComparable<InternalTimer<?,
     PriorityComparator<InternalTimer<?, ?>> TIMER_COMPARATOR =
             (left, right) -> Long.compare(left.getTimestamp(), right.getTimestamp());
     /**
+     * 就是Timer的过期时间。
      * Returns the timestamp of the timer. This value determines the point in time when the timer
      * will fire.
      */

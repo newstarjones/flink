@@ -92,6 +92,9 @@ public class OperatorChain<OUT, OP extends StreamOperator<OUT>>
 
     private static final Logger LOG = LoggerFactory.getLogger(OperatorChain.class);
 
+    /**
+     * 负责向下游输出。猜测：该数组长度等于 下游算子的并行度
+     */
     private final RecordWriterOutput<?>[] streamOutputs;
 
     private final WatermarkGaugeExposingOutput<StreamRecord<OUT>> mainOperatorOutput;

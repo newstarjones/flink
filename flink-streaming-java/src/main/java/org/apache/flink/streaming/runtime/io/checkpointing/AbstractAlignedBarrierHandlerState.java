@@ -57,7 +57,7 @@ abstract class AbstractAlignedBarrierHandlerState implements BarrierHandlerState
             throws IOException, CheckpointException {
         checkState(!checkpointBarrier.getCheckpointOptions().isUnalignedCheckpoint());
         state.blockChannel(channelInfo);
-        if (controller.allBarriersReceived()) {
+        if (controller.allBarriersReceived()) { // 如果全部的barrier都收到
             controller.triggerGlobalCheckpoint(checkpointBarrier);
             state.unblockAllChannels();
             return new WaitingForFirstBarrier(state.getInputs());

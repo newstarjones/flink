@@ -134,7 +134,11 @@ public class SingleInputGate extends IndexedInputGate {
      */
     private final int consumedSubpartitionIndex;
 
-    /** The number of input channels (equivalent to the number of consumed partitions). */
+    /**
+     * 等于上游的partition数
+     *
+     * The number of input channels (equivalent to the number of consumed partitions).
+     * */
     private final int numberOfInputChannels;
 
     /**
@@ -166,7 +170,7 @@ public class SingleInputGate extends IndexedInputGate {
 
     /**
      * Buffer pool for incoming buffers. Incoming data from remote channels is copied to buffers
-     * from this pool.
+     * from this pool. 来自远程channel的数据 将被复制到这个BufferPool的某个buffer中
      */
     private BufferPool bufferPool;
 
@@ -728,7 +732,7 @@ public class SingleInputGate extends IndexedInputGate {
             buffer.recycleBuffer();
         }
 
-        if (event.getClass() == EndOfPartitionEvent.class) {
+        if (event.getClass() == EndOfPartitionEvent.class) { // 意味着上游关闭 partition, 即不产生数据，那当前的Gate也没有数据可消费
             channelsWithEndOfPartitionEvents.set(currentChannel.getChannelIndex());
 
             if (channelsWithEndOfPartitionEvents.cardinality() == numberOfInputChannels) {
@@ -841,6 +845,13 @@ public class SingleInputGate extends IndexedInputGate {
                 }));
     }
 
+    /**
+     * channel开始排队
+     *
+     * @param channel
+     * @param prioritySequenceNumber
+     * @param forcePriority
+     */
     private void queueChannel(
             InputChannel channel, @Nullable Integer prioritySequenceNumber, boolean forcePriority) {
         try (GateNotificationHelper notification =

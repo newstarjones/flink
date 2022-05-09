@@ -291,10 +291,22 @@ public class InternalTimerServiceImpl<K, N> implements InternalTimerService<N> {
         }
     }
 
+    /**
+     * 推进 watermark，在此watermark之前的 所有窗口，通通触发计算
+     * @param time
+     * @throws Exception
+     */
     public void advanceWatermark(long time) throws Exception {
         currentWatermark = time;
 
         InternalTimer<K, N> timer;
+
+        // 如果窗口是带了 Lateness 配置的，则
+        //                       |-----Lateness-----|
+        //时间轴 ---|-------------|------|-----------|-------|---->
+        //window_start-----window_end--watermark1-------watermark2
+        // watermark1 进来，触发一次窗口计算(但窗口不会clean，因为有Lateness)，
+        // watermark2 进来，再触发一次窗口计算(窗口会被clean)
 
         while ((timer = eventTimeTimersQueue.peek()) != null && timer.getTimestamp() <= time) {
             eventTimeTimersQueue.poll();

@@ -40,6 +40,7 @@ import java.util.Map;
  * <p>All methods in this class are thread-safe.
  *
  * <p>This class closes all registered {@link Closeable}s in the reverse registration order.
+ * 即 先注册进来的后关闭
  */
 @Internal
 public class CloseableRegistry extends AbstractCloseableRegistry<Closeable, Object> {

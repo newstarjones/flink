@@ -64,7 +64,8 @@ import static org.apache.flink.core.memory.MemoryUtils.getByteBufferAddress;
  *
  * <p><i>Note on efficiency</i>: For best efficiency, we do not separate implementations of
  * different memory types with inheritance, to avoid the overhead from looking for concrete
- * implementations on invocations of abstract methods.
+ * implementations on invocations of abstract methods. 这里也是说 定义父类方法，子类负责具体实现，这种
+ * 方式会带来性能损耗，因此这里没有采用继承来区别是用的堆还是直接内存。
  */
 @Internal
 public final class MemorySegment {

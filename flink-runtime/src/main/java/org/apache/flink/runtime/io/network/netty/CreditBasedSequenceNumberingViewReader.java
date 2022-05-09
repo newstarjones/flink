@@ -198,6 +198,7 @@ class CreditBasedSequenceNumberingViewReader
 
     @Override
     public void notifyDataAvailable() {
+        // 向PartitionRequestQueue通知 当前Reader有数据可读
         requestQueue.notifyReaderNonEmpty(this);
     }
 

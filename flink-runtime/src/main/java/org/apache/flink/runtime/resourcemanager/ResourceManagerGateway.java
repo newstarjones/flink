@@ -59,6 +59,7 @@ public interface ResourceManagerGateway
 
     /**
      * Register a {@link JobMaster} at the resource manager.
+     * <p></p>注意这里的方法名还是叫做 JobManager而不是JobMaster，这有些误导
      *
      * @param jobMasterId The fencing token for the JobMaster leader
      * @param jobMasterResourceId The resource ID of the JobMaster that registers

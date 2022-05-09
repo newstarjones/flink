@@ -141,7 +141,9 @@ public interface TaskMailbox {
     boolean createBatch();
 
     /**
-     * Returns an optional with either the oldest mail from the batch (head of queue) if the batch
+     * <p> 这个方法和createBatch是配套用的。 一般先执行 createBatch，再执行 tryTakeFromBatch
+     *
+     * <p> Returns an optional with either the oldest mail from the batch (head of queue) if the batch
      * is not empty or an empty optional otherwise.
      *
      * <p>Must be called from the mailbox thread ({@link #isMailboxThread()}.
@@ -182,6 +184,9 @@ public interface TaskMailbox {
 
     /** This enum represents the states of the mailbox lifecycle. */
     enum State {
+        /**
+         * 只有邮箱打开，才能接收邮件
+         */
         OPEN(true),
         QUIESCED(false),
         CLOSED(false);

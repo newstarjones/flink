@@ -35,6 +35,7 @@ public interface CheckpointPlanCalculatorContext {
 
     /**
      * Detects whether there are already some tasks finished.
+     * 为true：表示批任务？因为批任务中才会有可结束的子任务。TODO 我猜测的
      *
      * @return Whether there are finished tasks.
      */

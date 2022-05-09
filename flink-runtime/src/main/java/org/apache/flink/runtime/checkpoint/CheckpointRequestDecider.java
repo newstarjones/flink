@@ -165,7 +165,7 @@ class CheckpointRequestDecider {
         CheckpointTriggerRequest first = queuedRequests.first();
         if (!first.isForce() && first.isPeriodic) {
             long nextTriggerDelayMillis = nextTriggerDelayMillis(lastCompletionMs);
-            if (nextTriggerDelayMillis > 0) {
+            if (nextTriggerDelayMillis > 0) {  // 意味着还没到cp的执行时间
                 queuedRequests
                         .pollFirst()
                         .completeExceptionally(
@@ -178,10 +178,15 @@ class CheckpointRequestDecider {
         return Optional.of(queuedRequests.pollFirst());
     }
 
+    /**
+     *
+     * @param lastCheckpointCompletionRelativeTime
+     * @return  <=0表示需要立即执行，>0表示还没达到两次cp的间隔，需等会再执行
+     */
     private long nextTriggerDelayMillis(long lastCheckpointCompletionRelativeTime) {
-        return lastCheckpointCompletionRelativeTime
-                - clock.relativeTimeMillis()
-                + minPauseBetweenCheckpoints;
+        return lastCheckpointCompletionRelativeTime /* 上次cp完成时间 */
+                - clock.relativeTimeMillis() /* 当前时间 */
+                + minPauseBetweenCheckpoints; /* 两次cp的间隔 */
     }
 
     @VisibleForTesting

@@ -141,13 +141,14 @@ public abstract class BufferWritingResultPartition extends ResultPartition {
     public void emitRecord(ByteBuffer record, int targetSubpartition) throws IOException {
         BufferBuilder buffer = appendUnicastDataForNewRecord(record, targetSubpartition);
 
-        while (record.hasRemaining()) {
+        while (record.hasRemaining()) { // 当前记录写了部分到buffer后，buffer就写满了
             // full buffer, partial record
             finishUnicastBufferBuilder(targetSubpartition);
+            // 重新申请buffer，将record没写完的部分写入
             buffer = appendUnicastDataForRecordContinuation(record, targetSubpartition);
         }
 
-        if (buffer.isFull()) {
+        if (buffer.isFull()) { // 写满的buffer要通知下游处理
             // full buffer, full record
             finishUnicastBufferBuilder(targetSubpartition);
         }

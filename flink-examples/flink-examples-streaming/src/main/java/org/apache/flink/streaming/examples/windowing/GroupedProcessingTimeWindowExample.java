@@ -60,7 +60,9 @@ public class GroupedProcessingTimeWindowExample {
                 .addSink(
                         new SinkFunction<Tuple2<Long, Long>>() {
                             @Override
-                            public void invoke(Tuple2<Long, Long> value) {}
+                            public void invoke(Tuple2<Long, Long> value) {
+//                                System.out.println(value);
+                            }
                         });
 
         env.execute();
@@ -98,6 +100,7 @@ public class GroupedProcessingTimeWindowExample {
 
         @Override
         public Tuple2<Long, Long> reduce(Tuple2<Long, Long> value1, Tuple2<Long, Long> value2) {
+            // 对window内相同的key 做求和运算
             return new Tuple2<>(value1.f0, value1.f1 + value2.f1);
         }
     }
@@ -112,8 +115,8 @@ public class GroupedProcessingTimeWindowExample {
 
             final long startTime = System.currentTimeMillis();
 
-            final long numElements = 20000000;
-            final long numKeys = 10000;
+            final long numElements = 20000000; // 产生的元素数量
+            final long numKeys = 10000; // 最多10000个key
             long val = 1L;
             long count = 0L;
 

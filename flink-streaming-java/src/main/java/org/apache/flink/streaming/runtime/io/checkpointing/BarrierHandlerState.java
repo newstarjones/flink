@@ -35,7 +35,7 @@ import java.io.IOException;
  * </ul>
  *
  * <p>Additionally depending on the configuration we can switch between aligned and unaligned
- * actions.
+ * actions. 此外，根据配置，我们可以在对齐和未对齐操作之间切换
  */
 interface BarrierHandlerState {
     BarrierHandlerState alignmentTimeout(Controller controller, CheckpointBarrier checkpointBarrier)

@@ -61,11 +61,11 @@ public class BoundedOutOfOrdernessWatermarks<T> implements WatermarkGenerator<T>
 
     @Override
     public void onEvent(T event, long eventTimestamp, WatermarkOutput output) {
-        maxTimestamp = Math.max(maxTimestamp, eventTimestamp);
+        maxTimestamp = Math.max(maxTimestamp, eventTimestamp); // 每来一个事件，更新当前的 最大时间
     }
 
     @Override
-    public void onPeriodicEmit(WatermarkOutput output) {
+    public void onPeriodicEmit(WatermarkOutput output) { // 周期性的发送水印
         output.emitWatermark(new Watermark(maxTimestamp - outOfOrdernessMillis - 1));
     }
 }

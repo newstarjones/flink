@@ -420,7 +420,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>> extends Ab
         if (status == InputStatus.MORE_AVAILABLE && recordWriter.isAvailable()) {
             return;
         }
-        if (status == InputStatus.END_OF_INPUT) {
+        if (status == InputStatus.END_OF_INPUT) { // 流再也没有数据流入，意味着当前流算子可以结束了
             controller.allActionsCompleted();
             return;
         }
@@ -683,6 +683,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>> extends Ab
 
                     // only set the StreamTask to not running after all operators have been closed!
                     // See FLINK-7430
+                    // StreamTask内的所有算子关闭后，标记当前StreamTask不再运行
                     isRunning = false;
                 });
         // processes the remaining mails; no new mails can be enqueued
@@ -1059,6 +1060,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>> extends Ab
                             operatorChain.setIgnoreEndOfInput(false);
                         }
 
+                        // 对State进行 cp
                         subtaskCheckpointCoordinator.checkpointState(
                                 checkpointMetaData,
                                 checkpointOptions,

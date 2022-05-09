@@ -31,8 +31,17 @@ import java.util.List;
  */
 @Internal
 public interface CheckpointableInput {
+    /**
+     * 阻塞消费
+     * @param channelInfo
+     */
     void blockConsumption(InputChannelInfo channelInfo);
 
+    /**
+     * 恢复消费
+     * @param channelInfo
+     * @throws IOException
+     */
     void resumeConsumption(InputChannelInfo channelInfo) throws IOException;
 
     List<InputChannelInfo> getChannelInfos();

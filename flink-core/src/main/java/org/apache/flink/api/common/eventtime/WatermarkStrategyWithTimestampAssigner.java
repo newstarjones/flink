@@ -19,6 +19,7 @@
 package org.apache.flink.api.common.eventtime;
 
 /**
+ * 这个跟代理模式有点像，或者说是部分代理。可以这么进行理解。
  * A {@link WatermarkStrategy} that overrides the {@link TimestampAssigner} of the given base {@link
  * WatermarkStrategy}.
  */
@@ -26,7 +27,13 @@ final class WatermarkStrategyWithTimestampAssigner<T> implements WatermarkStrate
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 负责调用 createWatermarkGenerator方法
+     */
     private final WatermarkStrategy<T> baseStrategy;
+    /**
+     * 负责调用 createTimestampAssigner方法
+     */
     private final TimestampAssignerSupplier<T> timestampAssigner;
 
     WatermarkStrategyWithTimestampAssigner(

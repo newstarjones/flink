@@ -179,6 +179,13 @@ final class AsyncCheckpointRunnable implements Runnable, Closeable {
         }
     }
 
+    /**
+     * 快照完成，向上级报告
+     *
+     * @param acknowledgedTaskStateSnapshot
+     * @param localTaskStateSnapshot
+     * @param asyncDurationMillis 花了多长时间
+     */
     private void reportCompletedSnapshotStates(
             TaskStateSnapshot acknowledgedTaskStateSnapshot,
             TaskStateSnapshot localTaskStateSnapshot,

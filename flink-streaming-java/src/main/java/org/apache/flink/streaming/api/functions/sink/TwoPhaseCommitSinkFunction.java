@@ -84,6 +84,9 @@ public abstract class TwoPhaseCommitSinkFunction<IN, TXN, CONTEXT> extends RichS
 
     protected transient Optional<CONTEXT> userContext;
 
+    /**
+     * 当前这个Sink函数的状态
+     */
     protected transient ListState<State<TXN, CONTEXT>> state;
 
     private final Clock clock;
@@ -352,21 +355,24 @@ public abstract class TwoPhaseCommitSinkFunction<IN, TXN, CONTEXT> extends RichS
         state = context.getOperatorStateStore().getListState(stateDescriptor);
 
         boolean recoveredUserContext = false;
-        if (context.isRestored()) {
+        if (context.isRestored()) { // 是否是恢复执行
             LOG.info("{} - restoring state", name());
             for (State<TXN, CONTEXT> operatorState : state.get()) {
                 userContext = operatorState.getContext();
                 List<TransactionHolder<TXN>> recoveredTransactions =
                         operatorState.getPendingCommitTransactions();
                 List<TXN> handledTransactions = new ArrayList<>(recoveredTransactions.size() + 1);
+                // 处理上次commit失败的事务
                 for (TransactionHolder<TXN> recoveredTransaction : recoveredTransactions) {
                     // If this fails to succeed eventually, there is actually data loss
+                    // Flink任务重启，尝试恢复事务，这里可能失败，导致任务再次失败。可能直到事务超时还不能成功，这时导致数据丢失
                     recoverAndCommitInternal(recoveredTransaction);
                     handledTransactions.add(recoveredTransaction.handle);
                     LOG.info("{} committed recovered transaction {}", name(), recoveredTransaction);
                 }
 
                 {
+                    // 处理 Pending Transaction，直接中断掉。 FIXME ？？
                     TXN transaction = operatorState.getPendingTransaction().handle;
                     recoverAndAbort(transaction);
                     handledTransactions.add(transaction);

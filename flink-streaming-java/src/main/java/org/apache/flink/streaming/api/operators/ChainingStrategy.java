@@ -49,6 +49,7 @@ public enum ChainingStrategy {
     HEAD,
 
     /**
+     * 除了跟HEAD 一样之外，当它遇到 Source时会尝试 chain 上
      * This operator will run at the head of a chain (similar as in {@link #HEAD}, but it will
      * additionally try to chain source inputs if possible. This allows multi-input operators to be
      * chained with multiple sources into one task.

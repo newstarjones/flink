@@ -62,7 +62,10 @@ public abstract class SourceReaderBase<E, T, SplitT extends SourceSplit, SplitSt
     /** A queue to buffer the elements fetched by the fetcher thread. */
     private final FutureCompletingBlockingQueue<RecordsWithSplitIds<E>> elementsQueue;
 
-    /** The state of the splits. */
+    /**
+     * <p> 当前Reader需要处理的Split，可以有多个
+     * <p> The state of the splits.
+     * */
     private final Map<String, SplitContext<T, SplitStateT>> splitStates;
 
     /** The record emitter to handle the records read by the SplitReaders. */
@@ -268,6 +271,8 @@ public abstract class SourceReaderBase<E, T, SplitT extends SourceSplit, SplitSt
     protected abstract SplitStateT initializedState(SplitT split);
 
     /**
+     * 这里的SplitT的T是 Type的意思。比如File类型，Kafka类型
+     *
      * Convert a mutable SplitStateT to immutable SplitT.
      *
      * @param splitState splitState.

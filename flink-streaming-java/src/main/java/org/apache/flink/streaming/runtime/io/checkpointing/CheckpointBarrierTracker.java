@@ -99,7 +99,7 @@ public class CheckpointBarrierTracker extends CheckpointBarrierHandler {
         CheckpointBarrierCount barrierCount = null;
         int pos = 0;
 
-        for (CheckpointBarrierCount next : pendingCheckpoints) {
+        for (CheckpointBarrierCount next : pendingCheckpoints) { // 同时存在多个cp
             if (next.checkpointId == barrierId) {
                 barrierCount = next;
                 break;
@@ -111,8 +111,9 @@ public class CheckpointBarrierTracker extends CheckpointBarrierHandler {
             // add one to the count to that barrier and check for completion
             int numBarriersNew = barrierCount.incrementBarrierCount();
             if (numBarriersNew == totalNumberOfInputChannels) {
+                // 最后一个channel的跟其他channel相同的barrierId到了，即barrier对齐了
                 // checkpoint can be triggered (or is aborted and all barriers have been seen)
-                // first, remove this checkpoint and all all prior pending
+                // first, remove this checkpoint and all prior pending
                 // checkpoints (which are now subsumed)
                 for (int i = 0; i <= pos; i++) {
                     pendingCheckpoints.pollFirst();

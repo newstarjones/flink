@@ -285,7 +285,7 @@ class CreditBasedPartitionRequestClientHandler extends ChannelInboundHandlerAdap
         final Class<?> msgClazz = msg.getClass();
 
         // ---- Buffer --------------------------------------------------------
-        if (msgClazz == NettyMessage.BufferResponse.class) {
+        if (msgClazz == NettyMessage.BufferResponse.class) { // 收到上游发来的 BufferAndBacklog
             NettyMessage.BufferResponse bufferOrEvent = (NettyMessage.BufferResponse) msg;
 
             RemoteInputChannel inputChannel = inputChannels.get(bufferOrEvent.receiverId);
@@ -339,9 +339,9 @@ class CreditBasedPartitionRequestClientHandler extends ChannelInboundHandlerAdap
     private void decodeBufferOrEvent(
             RemoteInputChannel inputChannel, NettyMessage.BufferResponse bufferOrEvent)
             throws Throwable {
-        if (bufferOrEvent.isBuffer() && bufferOrEvent.bufferSize == 0) {
+        if (bufferOrEvent.isBuffer() && bufferOrEvent.bufferSize == 0) { // 上游发来的BufferAndBacklog中的 buffer为空
             inputChannel.onEmptyBuffer(bufferOrEvent.sequenceNumber, bufferOrEvent.backlog);
-        } else if (bufferOrEvent.getBuffer() != null) {
+        } else if (bufferOrEvent.getBuffer() != null) { // buffer不为空
             inputChannel.onBuffer(
                     bufferOrEvent.getBuffer(), bufferOrEvent.sequenceNumber, bufferOrEvent.backlog);
         } else {

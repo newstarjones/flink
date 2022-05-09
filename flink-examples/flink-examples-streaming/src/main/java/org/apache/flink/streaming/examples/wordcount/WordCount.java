@@ -76,9 +76,10 @@ public class WordCount {
             System.out.println("Executing WordCount example with default input data set.");
             System.out.println("Use --input to specify file input.");
             // get default test text data
-            text = env.fromElements(WordCountData.WORDS);
+            text = env.fromElements(WordCountData.WORDS);  // 产生出8个subpartition
         }
 
+        // 到 flatMap 为止，产生 OneInputStreamTask
         DataStream<Tuple2<String, Integer>> counts =
                 // split up the lines in pairs (2-tuples) containing: (word,1)
                 text.flatMap(new Tokenizer())

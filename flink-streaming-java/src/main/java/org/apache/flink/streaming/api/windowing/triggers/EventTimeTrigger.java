@@ -41,7 +41,7 @@ public class EventTimeTrigger extends Trigger<Object, TimeWindow> {
             // if the watermark is already past the window fire immediately
             return TriggerResult.FIRE;
         } else {
-            ctx.registerEventTimeTimer(window.maxTimestamp());
+            ctx.registerEventTimeTimer(window.maxTimestamp()); // 见 ProcessingTimeoutTrigger？
             return TriggerResult.CONTINUE;
         }
     }

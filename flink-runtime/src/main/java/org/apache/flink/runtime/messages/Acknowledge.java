@@ -20,7 +20,11 @@ package org.apache.flink.runtime.messages;
 
 import java.io.Serializable;
 
-/** A generic acknowledgement message. */
+/**
+ * A generic acknowledgement message.
+ *
+ * <p></p> 通用性的回复用的消息.
+ */
 public class Acknowledge implements Serializable {
 
     private static final long serialVersionUID = 7808628311617273755L;

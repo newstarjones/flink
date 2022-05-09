@@ -114,6 +114,12 @@ public class MailboxProcessor implements Closeable {
         this(mailboxDefaultAction, new TaskMailboxImpl(Thread.currentThread()), actionExecutor);
     }
 
+    /**
+     *
+     * @param mailboxDefaultAction 对于StreamTask，默认执行其 processInput 方法
+     * @param mailbox
+     * @param actionExecutor
+     */
     public MailboxProcessor(
             MailboxDefaultAction mailboxDefaultAction,
             TaskMailbox mailbox,
@@ -197,7 +203,7 @@ public class MailboxProcessor implements Closeable {
 
         final MailboxController defaultActionContext = new MailboxController(this);
 
-        while (isNextLoopPossible()) {
+        while (isNextLoopPossible()) { // 如果收到毒药邮件，此循环结束。对于Stream 任务来说，也就意味着Stream任务结束
             // The blocking `processMail` call will not return until default action is available.
             processMail(localMailbox, false);
             if (isNextLoopPossible()) {

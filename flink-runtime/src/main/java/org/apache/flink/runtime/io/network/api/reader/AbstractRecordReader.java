@@ -56,6 +56,9 @@ abstract class AbstractRecordReader<T extends IOReadableWritable> extends Abstra
 
     private boolean finishedStateReading;
 
+    /**
+     * 是否已经请求过 partition
+     */
     private boolean requestedPartitions;
 
     private boolean isFinished;
@@ -90,15 +93,15 @@ abstract class AbstractRecordReader<T extends IOReadableWritable> extends Abstra
         // The action of partition request was removed from InputGate#setup since FLINK-16536, and
         // this is the only
         // unified way for launching partition request for batch jobs. In order to avoid potential
-        // performance concern,
+        // performance concern(性能问题),
         // we might consider migrating this action back to the setup based on some condition
-        // judgement future.
+        // judgement future. 我们可能考虑根据某些条件判断 未来将此操作迁移回setup
         if (!finishedStateReading) {
             inputGate.finishReadRecoveredState();
             finishedStateReading = true;
         }
 
-        if (!requestedPartitions) {
+        if (!requestedPartitions) { // 若没有请求过partition，则发起对partition的请求
             CompletableFuture<Void> stateConsumedFuture = inputGate.getStateConsumedFuture();
             while (!stateConsumedFuture.isDone()) {
                 Optional<BufferOrEvent> polled = inputGate.pollNext();
@@ -127,6 +130,7 @@ abstract class AbstractRecordReader<T extends IOReadableWritable> extends Abstra
                 }
             }
 
+            // inputGate.getNext() 会阻塞式拉取数据
             final BufferOrEvent bufferOrEvent =
                     inputGate.getNext().orElseThrow(IllegalStateException::new);
 

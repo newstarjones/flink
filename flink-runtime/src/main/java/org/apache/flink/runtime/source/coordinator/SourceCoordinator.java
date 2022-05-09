@@ -125,6 +125,7 @@ public class SourceCoordinator<SplitT extends SourceSplit, EnumChkT>
             }
         }
 
+        // enumerator 先执行，再执行其他方法
         // The start sequence is the first task in the coordinator executor.
         // We rely on the single-threaded coordinator executor to guarantee
         // the other methods are invoked after the enumerator has started.

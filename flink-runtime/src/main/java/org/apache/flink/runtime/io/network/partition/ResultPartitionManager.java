@@ -114,6 +114,10 @@ public class ResultPartitionManager implements ResultPartitionProvider {
     // Notifications
     // ------------------------------------------------------------------------
 
+    /**
+     * partition消费完成，收到通知
+     * @param partition
+     */
     void onConsumedPartition(ResultPartition partition) {
         LOG.debug("Received consume notification from {}.", partition);
 

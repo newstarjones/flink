@@ -529,6 +529,7 @@ public class CheckpointCoordinator {
 
             final long timestamp = System.currentTimeMillis();
 
+            // 1 创建 CheckpointPlan
             CompletableFuture<CheckpointPlan> checkpointPlanFuture =
                     checkpointPlanCalculator.calculateCheckpointPlan();
 
@@ -537,6 +538,7 @@ public class CheckpointCoordinator {
                             .thenApplyAsync(
                                     plan -> {
                                         try {
+                                            // 2 关联checkpoint的 ID和存储位置
                                             CheckpointIdAndStorageLocation
                                                     checkpointIdAndStorageLocation =
                                                             initializeCheckpoint(
@@ -550,6 +552,7 @@ public class CheckpointCoordinator {
                                     },
                                     executor)
                             .thenApplyAsync(
+                                    // 3 创建 PendingCheckpoint
                                     (checkpointInfo) ->
                                             createPendingCheckpoint(
                                                     timestamp,
@@ -582,7 +585,7 @@ public class CheckpointCoordinator {
                                 // be not null.
                                 // We use FutureUtils.getWithoutException() to make compiler happy
                                 // with checked
-                                // exceptions in the signature.
+                                // exceptions in the signature. //我们使用 FutureUtils.getWithoutException() 使编译器对签名中的检查异常感到满意. 结合代码看，这是说忽略checked exception
                                 PendingCheckpoint checkpoint =
                                         FutureUtils.getWithoutException(
                                                 pendingCheckpointCompletableFuture);
@@ -593,7 +596,7 @@ public class CheckpointCoordinator {
             FutureUtils.assertNoException(
                     CompletableFuture.allOf(masterStatesComplete, coordinatorCheckpointsComplete)
                             .handleAsync(
-                                    (ignored, throwable) -> {
+                                    (ignored, throwable) -> {  // 对应 masterStatesComplete, coordinatorCheckpointsComplete的结果
                                         final PendingCheckpoint checkpoint =
                                                 FutureUtils.getWithoutException(
                                                         pendingCheckpointCompletableFuture);
@@ -646,7 +649,7 @@ public class CheckpointCoordinator {
                                         return null;
                                     },
                                     timer)
-                            .exceptionally(
+                            .exceptionally(  // 若调用方 CompletableFuture 发生异常则调用下面的异常函数进行异常处理，否则不调用下面的异常函数而是直接返回调用方 CompletableFuture 的结果
                                     error -> {
                                         if (!isShutdown()) {
                                             throw new CompletionException(error);
@@ -659,7 +662,7 @@ public class CheckpointCoordinator {
                                         }
                                         return null;
                                     }));
-        } catch (Throwable throwable) {
+        } catch (Throwable throwable) { //异常兜底，还有可能的其他异常
             onTriggerFailure(request, throwable);
         }
     }

@@ -204,17 +204,26 @@ public class DefaultDeclarativeSlotPool implements DeclarativeSlotPool {
         return acceptedSlotOffers;
     }
 
+    /**
+     * 看slotOffer中提供的资源 能否满足1个资源需求
+     * @param slotOffer 这里将使用其中的ResourceProfile
+     * @param taskManagerLocation
+     * @param taskManagerGateway
+     * @return
+     */
     private Optional<AllocatedSlot> matchOfferWithOutstandingRequirements(
             SlotOffer slotOffer,
             TaskManagerLocation taskManagerLocation,
             TaskManagerGateway taskManagerGateway) {
 
+        // 看当前额slotOffer提供的资源是否满足 totalResourceRequirements中的 1个资源需求
         final Optional<ResourceProfile> match =
                 requirementMatcher.match(
                         slotOffer.getResourceProfile(),
                         totalResourceRequirements,
                         fulfilledResourceRequirements::getResourceCount);
 
+        // 若满足1个资源需求
         if (match.isPresent()) {
             final ResourceProfile matchedRequirement = match.get();
             LOG.debug(
@@ -222,8 +231,10 @@ public class DefaultDeclarativeSlotPool implements DeclarativeSlotPool {
                     slotOffer.getAllocationId(),
                     matchedRequirement);
 
+            // 没满足一个资源需求，在fulfilledResourceRequirements保存一下
             increaseAvailableResources(ResourceCounter.withResource(matchedRequirement, 1));
 
+            // AllocatedSlot 意味着该slot将会被分配Task
             final AllocatedSlot allocatedSlot =
                     createAllocatedSlot(slotOffer, taskManagerLocation, taskManagerGateway);
 

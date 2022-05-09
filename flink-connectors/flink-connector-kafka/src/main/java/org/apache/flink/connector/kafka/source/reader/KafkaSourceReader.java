@@ -53,6 +53,9 @@ public class KafkaSourceReader<T>
     // These maps need to be concurrent because it will be accessed by both the main thread
     // and the split fetcher thread in the callback.
     private final SortedMap<Long, Map<TopicPartition, OffsetAndMetadata>> offsetsToCommit;
+    /**
+     * 该split读取结束(该split再没有数据了)记录其完成的状态。即key：topicPartition，value：该分区的最后的offset
+     */
     private final ConcurrentMap<TopicPartition, OffsetAndMetadata> offsetsOfFinishedSplits;
 
     public KafkaSourceReader(

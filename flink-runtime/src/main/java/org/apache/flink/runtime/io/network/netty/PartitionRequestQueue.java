@@ -92,11 +92,13 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
     /**
      * Try to enqueue the reader once receiving credit notification from the consumer or receiving
      * non-empty reader notification from the producer.
+     * <p>当下游发送可用的credit，或者上游通知说当前有数据可读</p>
      *
      * <p>NOTE: Only one thread would trigger the actual enqueue after checking the reader's
      * availability, so there is no race condition here.
      */
     private void enqueueAvailableReader(final NetworkSequenceViewReader reader) throws Exception {
+        // reader.isAvailable() 这个会检查 credit
         if (reader.isRegisteredAsAvailable() || !reader.isAvailable()) {
             return;
         }

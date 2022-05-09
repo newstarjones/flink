@@ -205,8 +205,8 @@ public class KafkaPartitionSplitReader<T>
                         });
 
         // Assign new partitions.
-        newPartitionAssignments.addAll(consumer.assignment());
-        consumer.assign(newPartitionAssignments);
+        newPartitionAssignments.addAll(consumer.assignment()); // 把已经分配给 consumer 的分区加到 newPartitionAssignments 中，得到总共的分区
+        consumer.assign(newPartitionAssignments); // 再将最终的 newPartitionAssignments 分配给 consumer。
 
         // Seek on the newly assigned partitions to their stating offsets.
         seekToStartingOffsets(
@@ -388,7 +388,13 @@ public class KafkaPartitionSplitReader<T>
     // ---------------- private helper class ------------------------
 
     private static class KafkaPartitionSplitRecords<T> implements RecordsWithSplitIds<T> {
+        /**
+         * key：split， value：该split下的记录。split是kafka给出的一个抽象，用kafka的语言表达就是 partition
+         */
         private final Map<String, Collection<T>> recordsBySplits;
+        /**
+         *
+         */
         private final Set<String> finishedSplits;
         private Iterator<Map.Entry<String, Collection<T>>> splitIterator;
         private String currentSplitId;

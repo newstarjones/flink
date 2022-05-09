@@ -412,6 +412,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
     }
 
     private void waitForAllSlotsAndDeploy(final List<DeploymentHandle> deploymentHandles) {
+        // 这里分为了2步： 1 分配资源 2 部署执行
         FutureUtils.assertNoException(
                 assignAllResources(deploymentHandles).handle(deployAll(deploymentHandles)));
     }
@@ -430,6 +431,12 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
         return FutureUtils.waitForAll(slotAssignedFutures);
     }
 
+    /**
+     * 执行一个Job。即执行一个Job的所有subtasks。
+     *
+     * @param deploymentHandles 一个job上的所有subtask
+     * @return
+     */
     private BiFunction<Void, Throwable, Void> deployAll(
             final List<DeploymentHandle> deploymentHandles) {
         return (ignored, throwable) -> {

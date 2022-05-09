@@ -43,12 +43,16 @@ import java.util.stream.Collectors;
  * TaskSlot} can be in one of the following states:
  *
  * <ul>
- *   <li>Free - The slot is empty and not allocated to a job
- *   <li>Releasing - The slot is about to be freed after it has become empty.
- *   <li>Allocated - The slot has been allocated for a job.
+ *   <li>Free - The slot is empty and not allocated to a job 为空
+ *   <li>Releasing - The slot is about to be freed after it has become empty. 将要被释放
+ *   <li>Allocated - The slot has been allocated for a job. 被分配
  *   <li>Active - The slot is in active use by a job manager which is the leader of the allocating
- *       job.
+ *       job. 被使用
  * </ul>
+ *
+ * 状态转换：
+ * Free->Allocated->Active
+ * Allocated/Active->Releasing(意味着一旦slot为空将被free)->Free
  *
  * <p>A task slot can only be allocated if it is in state free. An allocated task slot can transit
  * to state active.
@@ -64,7 +68,9 @@ import java.util.stream.Collectors;
 public class TaskSlot<T extends TaskSlotPayload> implements AutoCloseableAsync {
     private static final Logger LOG = LoggerFactory.getLogger(TaskSlot.class);
 
-    /** Index of the task slot. */
+    /**
+     * Index of the task slot. 从0开始
+     * */
     private final int index;
 
     /** Resource characteristics for this slot. */
@@ -137,6 +143,11 @@ public class TaskSlot<T extends TaskSlotPayload> implements AutoCloseableAsync {
         return state;
     }
 
+    /**
+     * 表示槽上 没有Task运行
+     *
+     * @return
+     */
     public boolean isEmpty() {
         return tasks.isEmpty();
     }
